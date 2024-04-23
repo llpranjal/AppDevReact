@@ -5,32 +5,53 @@ import './App.css'
 import Mynavbar from './navbar'
 
 function Home() {
-  const [showImages, setShowImages] = useState(false);
-  
-  const items = [
-    { src: "Orange-colored-cat-yawns-displaying-teeth.webp", width: '400' },
-    { src: "catgif.gif", width: '300' },
-    { src: 'sleepy.jpg', width: '300' }
-  ];
+  const [catImages, setCatImages] = useState([]);
+
+  const addCatImage = async () => {
+    try {
+      const response = await fetch('https://api.thecatapi.com/v1/images/search');
+      if (!response.ok) {
+        throw new Error('Failed to fetch cat image');
+      }
+      const data = await response.json();
+      const cat = {
+        src: data[0].url,
+        width: data[0].width,
+      };
+      setCatImages([...catImages, cat]);
+    } catch (error) {
+      console.error('Error fetching cat image:', error);
+    }
+  };
 
   return (
     <div>
-      <h1>Welcome to the Home Page!</h1>
-      <p>Click the button below to see cute cats!</p>
-      <button onClick={() => setShowImages(!showImages)}>
-        {showImages ? 'Hide Cats' : 'Show Cats'}
-      </button>
+      <div>
+        <img src = 'fishcat.jpg'></img>
+      </div>
+      <h1>Pranjal's Cutie Patootie Cat Generator</h1>
 
-      {showImages && (
-        <div>
+      <div className = "spam"> 
+      <p>Click the button below to add a cute cat! <strong>SPAM IT!!!</strong></p>
+
+      </div>
+      <div className = 'addButton'>
+        <button onClick={addCatImage}>Add Cat</button>
+      </div>
+
+      <div>
+        <div className = 'catText'>
+          <img className = 'leftArrow' src = 'down arrow.gif'></img>
           <h3>Cute Photos Of Cats</h3>
-          <div>
-            {items.map((item, index) => (
-              <img key={index} src={item.src} width={item.width} />
-            ))}
-          </div>
+          <img className = 'rightArrow' src = 'down arrow.gif'></img>
+
         </div>
-      )}
+        <div className="cat-images">
+          {catImages.map((cat, index) => (
+            <img key={index} src={cat.src} alt={`Cat ${index}`} width={cat.width} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
